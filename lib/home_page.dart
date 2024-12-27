@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screen/favorite.dart';
-import 'package:flutter_application_2/screen/playlist_video.dart';
-import 'package:flutter_application_2/screen/recently_play_.dart';
-import 'package:flutter_application_2/screen/search_video.dart';
+import 'package:musi/screen/favorite_screnn.dart';
+import 'package:musi/screen/playlist_video.dart';
+import 'package:musi/screen/recently_screen_.dart';
+import 'package:musi/screen/search_video.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
       case 2:
         page = RecentlyPlay();
       case 3:
-      page= Favorite();
+        page = FavoriteScrenn();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -49,13 +49,13 @@ class _HomePageState extends State<HomePage> {
                 label: 'Search',
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.recent_actors), label: 'Recently Play'),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite,
-                    
-                    ),
-                    label: 'Favorite',
-                  )
+                icon: Icon(Icons.recent_actors),
+                label: 'Recently Play',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Favorite',
+              ),
             ],
             currentIndex: selectedIndex,
             selectedItemColor: Color.fromARGB(255, 233, 100, 41),

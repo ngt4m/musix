@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_2/models/playlist_model.dart';
-import 'package:flutter_application_2/provider/favorite_provider.dart';
-import 'package:flutter_application_2/provider/recently_provider.dart';
-import 'package:flutter_application_2/provider/video_provider.dart';
-import 'package:flutter_application_2/service/video_api.dart';
-import 'package:flutter_application_2/screen/video.dart';
+import 'package:musi/models/playlist_model.dart';
+import 'package:musi/provider/favorite_video.dart';
+import 'package:musi/provider/recently_provider.dart';
+import 'package:musi/provider/recently_video.dart';
+import 'package:musi/service/video_api.dart';
+import 'package:musi/screen/video.dart';
 import 'package:provider/provider.dart';
 
 class VideoListScreen extends StatefulWidget {
@@ -37,7 +37,6 @@ class _VideoListState extends State<VideoListScreen> {
   //List<PlaylistModel>? _videos;
 
   //List<PlaylistModel >  listRecnetly =[];
-
   final ScrollController scrollController = ScrollController();
   @override
   void initState() {
@@ -100,20 +99,13 @@ class _VideoListState extends State<VideoListScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    ),
+              
                     Text(
                       'Playlists',
                       style: TextStyle(color: Colors.white),
                     ),
                     Spacer(),
-                    Text(
-                      'Recently Played',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w800),
-                    ),
+                  
                     Spacer(),
                     Icon(
                       Icons.more_horiz,
@@ -152,8 +144,9 @@ class _VideoListState extends State<VideoListScreen> {
 
                     return GestureDetector(
                       onTap: () {
-                        Provider.of<RecentlyProvider>(context, listen: false)
-                            .addVideoFromPlaylist(video);
+                        // Provider.of<RecentlyProvider>(context, listen: false)
+                        //     .AddVideoFromPlaylistRecently(context,video);
+                        AddVideoFromPlaylistRecently(context,video);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -171,6 +164,12 @@ class _VideoListState extends State<VideoListScreen> {
                           style: const TextStyle(color: Colors.white),
                         ),
                         subtitle: Text(video.channelTitle),
+                        trailing: IconButton(
+                          icon: Icon(Icons.favorite_border),
+                          onPressed: () async {
+                            AddVideoFromPlaylistFavorite(context, video);
+                          },
+                        ),
                       ),
                     );
                   },

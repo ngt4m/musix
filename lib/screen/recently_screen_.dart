@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/models/video_model.dart';
-import 'package:flutter_application_2/provider/recently_provider.dart';
-import 'package:flutter_application_2/provider/video_provider.dart';
-import 'package:flutter_application_2/screen/video.dart';
+import 'package:musi/models/video_model.dart';
+import 'package:musi/provider/recently_provider.dart';
+import 'package:musi/screen/video.dart';
 import 'package:provider/provider.dart';
 
 class RecentlyPlay extends StatefulWidget {
@@ -13,19 +12,16 @@ class RecentlyPlay extends StatefulWidget {
 }
 
 class _RecentlyPlayState extends State<RecentlyPlay> {
-  late VideoProvider videoManager;
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
         body: Consumer<RecentlyProvider>(
           builder: (context, recentlyProvider, child) {
-         
             if (recentlyProvider.recentlyPlayed.isEmpty) {
               return CircularProgressIndicator();
             }
             return ListView.builder(
-              itemCount: -recentlyProvider.recentlyPlayed.length,
+              itemCount: recentlyProvider.recentlyPlayed.length,
               itemBuilder: (context, index) {
                 final VideoModel video = recentlyProvider.recentlyPlayed[index];
                 return ListTile(

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/home_page.dart';
-import 'package:flutter_application_2/provider/recently_provider.dart';
-import 'package:flutter_application_2/service/video_api.dart';
+import 'package:musi/home_page.dart';
+import 'package:musi/provider/favorite_provider.dart';
+import 'package:musi/provider/recently_provider.dart';
+import 'package:musi/service/video_api.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final favouriteProvider = FavoriteProvider();
+  await favouriteProvider.LoadFromLocal();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=>YouTubeService()),
-        ChangeNotifierProvider(create: (_)=>RecentlyProvider())
+        ChangeNotifierProvider(create: (_)=>RecentlyProvider()),
+        ChangeNotifierProvider(create: (_)=>favouriteProvider),
       ],
     
 child: MyApp(),

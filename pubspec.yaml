@@ -1,4 +1,4 @@
-name: flutter_application_2
+name: musi
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -35,6 +35,7 @@ dependencies:
   provider: ^6.1.2
   text_scroll: ^0.2.0
   shared_preferences: ^2.3.2
+  hive_flutter: ^1.1.0
  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/models/search_model.dart';
-import 'package:flutter_application_2/models/playlist_model.dart';
-import 'package:flutter_application_2/provider/recently_provider.dart';
-import 'package:flutter_application_2/screen/video.dart';
-import 'package:flutter_application_2/service/video_api.dart';
+import 'package:musi/models/search_model.dart';
+import 'package:musi/provider/favorite_video.dart';
+import 'package:musi/provider/recently_provider.dart';
+import 'package:musi/provider/recently_video.dart';
+import 'package:musi/screen/video.dart';
+import 'package:musi/service/video_api.dart';
 import 'package:provider/provider.dart';
 
 class SearchVideo extends StatefulWidget {
@@ -15,16 +16,6 @@ class SearchVideo extends StatefulWidget {
 
 class _SearchVideoState extends State<SearchVideo> {
   bool typing = false;
-  
- 
-
-  // YouTubeService youtubeService = YouTubeService();
-  // Future<void> callAPI() async {
-  //   if (TextBox.ytsearch.text.isNotEmpty) {
-  //     result =await youtubeService.searchVideos(TextBox.ytsearch.text);
-  //     setState(() {});
-  //   }
-  // }
 
   final ScrollController scrollController = ScrollController();
   @override
@@ -68,7 +59,8 @@ class _SearchVideoState extends State<SearchVideo> {
                 if (!typing) {
                   _searchVideos();
                 }
-              });
+              },
+              );
             },
           ),
         ],
@@ -80,7 +72,7 @@ class _SearchVideoState extends State<SearchVideo> {
               child: CircularProgressIndicator(),
             );
           }
-          ;
+
           return ListView.builder(
               controller: scrollController,
               itemCount: videoProvider.search.length +
@@ -100,43 +92,86 @@ class _SearchVideoState extends State<SearchVideo> {
   }
 }
 
-Widget listItem(SearchModel video, BuildContext context) {
+Widget listItem(SearchModel search, BuildContext context) {
   return GestureDetector(
     onTap: () {
-      Provider.of<RecentlyProvider> (context,listen: false).addVideoFromSearch(video);
+      // Provider.of<RecentlyProvider>(context, listen: false)
+      //     .AddVideoFromSearch(video);
+      AddVideoFromSearchRecently(context, search);
       Navigator.push(
         context,
         //-> video screen
         MaterialPageRoute(
           builder: (context) =>
-              VideoScreen(youtubeID: video.id, youtubeTitle: video.title),
+              VideoScreen(youtubeID: search.id, youtubeTitle: search.title),
         ),
       );
     },
     child: ListTile(
-      leading: Image.network(video.thumbnailUrl),
+      leading: Image.network(search.thumbnailUrl),
       title: Text(
-        video.title,
+        search.title,
         style: const TextStyle(color: Colors.white),
       ),
-      subtitle: Text(video.channelTitle),
+      subtitle: Text(search.channelTitle),
+      trailing: IconButton(
+        icon: Icon(Icons.favorite_border),
+        onPressed: () async {
+          AddVideoFromSearchFavorite(context, search);
+        },
+      ),
     ),
   );
 }
 
-class TextBox extends StatelessWidget {
+class TextBox extends StatefulWidget {
   const TextBox({Key? key}) : super(key: key);
   static TextEditingController ytsearch = TextEditingController();
+
+  @override
+  State<TextBox> createState() => _TextBoxState();
+}
+
+class _TextBoxState extends State<TextBox> {
+  final FocusNode focus = FocusNode();
+  List<String> suggestions = [];
+  bool isfocus = false;
   void _clearTextField() {
-    ytsearch.clear();
+    TextBox.ytsearch.clear();
+    setState(() {
+      suggestions.clear();
+    });
   }
 
-//search box
+  void _fetchSuggestion(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        suggestions.clear();
+      });
+      return;
+    }
+
+    final apiservice = Provider.of<YouTubeService>(context, listen: false);
+    final fetchSuggestion = await apiservice.getSuggestions(query);
+    setState(() {
+      suggestions = fetchSuggestion;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    focus.addListener(() {
+      setState(() {
+        isfocus = focus.hasFocus;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 50),
-      child: TextField(
+    return Column(children: [
+      TextField(
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: 'Search',
@@ -153,14 +188,44 @@ class TextBox extends StatelessWidget {
             },
           ),
         ),
-        controller: ytsearch,
+        controller: TextBox.ytsearch,
         //tap Enter
+        onChanged: _fetchSuggestion,
         onSubmitted: (value) {
           final videoProvider =
               Provider.of<YouTubeService>(context, listen: false);
           videoProvider.searchVideos(value);
+          setState(() {
+            suggestions.clear();
+          });
         },
       ),
-    );
+      if (isfocus && suggestions.isNotEmpty)
+        Container(
+          color: Colors.black,
+          child: ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(
+                  suggestions[index],
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () {
+                  TextBox.ytsearch.text = suggestions[index];
+                  final videoProvider =
+                      Provider.of<YouTubeService>(context, listen: false);
+                  videoProvider.searchVideos(suggestions[index]);
+                  setState(() {
+                    suggestions.clear();
+                  });
+                },
+              );
+            },
+          ),
+        )
+    ]);
   }
 }

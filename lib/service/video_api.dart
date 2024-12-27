@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/key_api/keys.dart';
-import 'package:flutter_application_2/models/search_model.dart';
-import 'package:flutter_application_2/models/playlist_model.dart';
+import 'package:musi/key_api/keys.dart';
+import 'package:musi/models/search_model.dart';
+import 'package:musi/models/playlist_model.dart';
 import 'package:http/http.dart' as http;
 
 class YouTubeService with ChangeNotifier {
   String _nextPageToken = '';
   bool _isLoading = false;
-  List<PlaylistModel> _videos = [];
-  List<PlaylistModel> get videos => _videos;
-
+   List<PlaylistModel> _videos = [];
+   List<PlaylistModel> get videos => _videos;
 
   List<SearchModel> _search = [];
   List<SearchModel> get search => _search;
+
   bool get isLoading => _isLoading;
 
   String _createUrl(Map<String, String> parameters) {
@@ -40,8 +40,8 @@ class YouTubeService with ChangeNotifier {
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> videoItems = data['items'];
-      _videos
-          .addAll(videoItems.map((item) => PlaylistModel.fromMap(item)).toList());
+      _videos.addAll(
+          videoItems.map((item) => PlaylistModel.fromMap(item)).toList());
       _nextPageToken = data['nextPageToken'] ?? '';
       _isLoading = false;
       notifyListeners();
@@ -59,7 +59,7 @@ class YouTubeService with ChangeNotifier {
     notifyListeners();
 
     if (!loadMore) {
-      _search = [];
+      _videos = [];
     }
     Map<String, String> parameters = {
       'part': 'snippet',
@@ -77,10 +77,10 @@ class YouTubeService with ChangeNotifier {
       final Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> searchItems = data['items'];
       if (!loadMore) {
-        _search = [];
+        _videos = [];
       }
-      _search
-          .addAll(searchItems.map((item) => SearchModel.fromMap(item)).toList());
+      _search.addAll(
+          searchItems.map((item) => SearchModel.fromMap(item)).toList());
 
       _nextPageToken = data['nextPageToken'] ?? '';
     } else {
@@ -105,4 +105,21 @@ class YouTubeService with ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
+
+  Future<List<String>> getSuggestions(String query) async {
+    if (query.isEmpty) {
+      return [];
+    }
+    final url = Uri.parse(
+        'http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=$query');
+
+     final response = await http.get(url);
+      if (response.statusCode == 200) {
+      final List<dynamic> suggestions = json.decode(response.body)[1];
+      return suggestions.map((s) => s.toString()).toList();
+    } else {
+      throw Exception('Failed to fetch suggestions');
+    }
+  
+  }
 }

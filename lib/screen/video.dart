@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/home_page.dart';
+import 'package:musi/home_page.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_2/screen/bottom_sheet.dart';
-import 'package:flutter_application_2/service/video_api.dart';
+import 'package:musi/service/video_api.dart';
 import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';

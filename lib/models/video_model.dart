@@ -1,5 +1,5 @@
-import 'package:flutter_application_2/models/playlist_model.dart';
-import 'package:flutter_application_2/models/search_model.dart';
+import 'package:musi/models/playlist_model.dart';
+import 'package:musi/models/search_model.dart';
 
 class VideoModel {
   final String id;
@@ -33,4 +33,23 @@ class VideoModel {
       channelTitle: searchVideo.channelTitle,
     );
   }
+
+    Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'thumbnailUrl': thumbnailUrl,
+      'channelTitle': channelTitle,
+    };
+  }
+  factory VideoModel.fromMap(Map<String, dynamic> map) {
+    return VideoModel(
+      id: map['id'],
+      title: map['title'],
+      thumbnailUrl: map['thumbnailUrl'],
+      channelTitle: map['channelTitle'],
+    );
+  }
+
+
 }
