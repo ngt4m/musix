@@ -19,44 +19,55 @@ class _FavoriteScrennState extends State<FavoriteScrenn> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         actions: [
-        PopupMenuButton(
-          onSelected:(value) {
-            if(value=='Xoadanhsach'){
-              favoriteProvider.RemoveAll();
-            }
-          } ,
-          itemBuilder: (BuildContext context)=><PopupMenuEntry<String>>[
-           const PopupMenuItem(
-              value: 'Xoadanhsach' ,
-              child: Text('Xóa danh sách'),
-            ),
-        ]
-        ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.add),
-          ),
+          PopupMenuButton(
+              onSelected: (value) {
+                if (value == 'xoadanhsach') {
+                  favoriteProvider.RemoveAllFavorites();
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem(
+                      value: 'xoadanhsach',
+                      child: Text('Xóa danh sách'),
+                    ),
+                  ],
+                  icon: Icon(Icons.more_horiz),
+                  ),
         ],
       ),
       body: ListView.builder(
-          itemCount: favoriteProvider.favourites.length,
-          itemBuilder: (context, index) {
-            final VideoModel video = favoriteProvider.favourites[index];
-            return ListTile(
-                leading: Image.network(video.thumbnailUrl),
-                title: Text(
-                  video.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+        reverse: true,
+        itemCount: favoriteProvider.favourites.length,
+        itemBuilder: (context, index) {
+          final VideoModel video = favoriteProvider.favourites[index];
+          return Dismissible(
+            key: ValueKey(favoriteProvider.favourites[index]),
+            direction: DismissDirection.horizontal,
+            background: Container(
+              color: Colors.red,
+              child: Icon(Icons.delete),
+            ),
+            onDismissed: (direction) {
+              favoriteProvider.RemoveFromFavourites(video);
+            },
+            child: ListTile(
+              leading: Image.network(video.thumbnailUrl),
+              title: Text(
+                video.title,
+                style: TextStyle(
+                  color: Colors.white,
                 ),
-                subtitle: Text(
-                  video.channelTitle,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ));
-          }),
+              ),
+              subtitle: Text(
+                video.channelTitle,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

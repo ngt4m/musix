@@ -8,12 +8,14 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final favouriteProvider = FavoriteProvider();
-  await favouriteProvider.LoadFromLocal();
+  await favouriteProvider.LoadFromLocalFavorite();
+  final recentlyProvider = RecentlyProvider();
+  await recentlyProvider.LoadFromLocalRecently();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=>YouTubeService()),
-        ChangeNotifierProvider(create: (_)=>RecentlyProvider()),
+        ChangeNotifierProvider(create: (_)=>recentlyProvider),
         ChangeNotifierProvider(create: (_)=>favouriteProvider),
       ],
     

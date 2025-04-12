@@ -11,23 +11,23 @@ class FavoriteProvider extends ChangeNotifier {
     if (!_favourites.any((item) => item.id == video.id)) {
       _favourites.add(video);
       notifyListeners();
-      await _SaveToLocal();
+      await _SaveToLocalFavorite();
     }
   }
 
   void RemoveFromFavourites(VideoModel video) async {
     _favourites.removeWhere((item) => item.id == video.id);
     notifyListeners();
-    await _SaveToLocal();
+    await _SaveToLocalFavorite();
   }
 
-  void RemoveAll() async {
+  void RemoveAllFavorites() async {
     _favourites.clear();
     notifyListeners();
-    await _SaveToLocal();
+    await _SaveToLocalFavorite();
   }
 
-  Future<void> _SaveToLocal() async {
+  Future<void> _SaveToLocalFavorite() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> videoData = _favourites
         .map((video) => jsonEncode({
@@ -40,7 +40,7 @@ class FavoriteProvider extends ChangeNotifier {
     prefs.setStringList('favourites', videoData);
   }
 
-  Future<void> LoadFromLocal() async {
+  Future<void> LoadFromLocalFavorite() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String>? videoData = prefs.getStringList('favourites');
     if (videoData != null) {

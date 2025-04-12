@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musi/models/search_model.dart';
 import 'package:musi/provider/favorite_video.dart';
-import 'package:musi/provider/recently_provider.dart';
 import 'package:musi/provider/recently_video.dart';
 import 'package:musi/screen/video.dart';
 import 'package:musi/service/video_api.dart';
@@ -153,6 +152,7 @@ class _TextBoxState extends State<TextBox> {
 
     final apiservice = Provider.of<YouTubeService>(context, listen: false);
     final fetchSuggestion = await apiservice.getSuggestions(query);
+    print(fetchSuggestion);//log dữ liệu trả về
     setState(() {
       suggestions = fetchSuggestion;
     });
@@ -202,8 +202,10 @@ class _TextBoxState extends State<TextBox> {
       ),
       if (isfocus && suggestions.isNotEmpty)
         Container(
+          height : 200,
           color: Colors.black,
           child: ListView.builder(
+               shrinkWrap: true,
             itemCount: suggestions.length,
             itemBuilder: (context, index) {
               return ListTile(

@@ -19,7 +19,11 @@ class RecentlyProvider extends ChangeNotifier {
     notifyListeners();
     await _SaveToLocalRecently();
   }
-
+  void RemoveAllRecently() async {
+    _listRecently.clear();
+    notifyListeners();
+    await _SaveToLocalRecently();
+  }
   Future<void> _SaveToLocalRecently() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> videoData = _listRecently
