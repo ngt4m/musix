@@ -172,12 +172,14 @@ class _TextBoxState extends State<TextBox> {
   Widget build(BuildContext context) {
     return Column(children: [
       TextField(
+        
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: 'Search',
           hintStyle: const TextStyle(
             color: Color.fromARGB(255, 129, 129, 129),
           ),
+          
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -190,6 +192,7 @@ class _TextBoxState extends State<TextBox> {
         ),
         controller: TextBox.ytsearch,
         //tap Enter
+        autofocus: true,
         onChanged: _fetchSuggestion,
         onSubmitted: (value) {
           final videoProvider =

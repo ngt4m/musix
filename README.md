@@ -3,7 +3,8 @@
 Music app 
 
 ## Getting Started
-
+Intergrates Youtube data API 
+MVVM
 This project is a starting point for a Musix
 
 
