@@ -14,10 +14,10 @@ class _FavoriteScrennState extends State<FavoriteScrenn> {
   @override
   Widget build(BuildContext context) {
     final favoriteProvider = Provider.of<FavoriteProvider>(context);
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        title: Text("Favourite"),
         actions: [
           PopupMenuButton(
               onSelected: (value) {

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musi/home_page.dart';
 import 'package:flutter/services.dart';
+import 'package:musi/mini_player/mini_video_player.dart';
 import 'package:musi/service/video_api.dart';
 import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
@@ -26,7 +27,7 @@ class _VideoScreenState extends State<VideoScreen> {
   bool isVideoPlaying = true; //video play or not
   double currentvol = 100;
   late int currentIndex = 0; //theo dõi vị trí của video trong danh sách
-
+  bool isMiniPlayer = false;
   @override
   void initState() {
     super.initState();
@@ -101,6 +102,18 @@ class _VideoScreenState extends State<VideoScreen> {
     super.dispose();
   }
 
+  void switchToMiniPlayer() {
+    setState(() {
+      isMiniPlayer = true;
+    });
+  }
+
+  void switchToFullScreen() {
+    setState(() {
+      isMiniPlayer = false;
+    });
+  }
+
   void _setVolume(double volume) {
     setState(() {
       currentvol = volume;
@@ -115,180 +128,184 @@ class _VideoScreenState extends State<VideoScreen> {
       player: YoutubePlayer(controller: controller),
       builder: (context, player) => Material(
         color: Colors.black,
-        child: Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      // _showBottomSheet();
-                      //  Provider.of<BottomSheetManager>(context, listen: false).showBottomSheet();
-                      Navigator.pop(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                      );
-                      //  controller.pause();
-                    },
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      color: Color.fromARGB(255, 133, 133, 133),
+        child: Stack(children: [
+          Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // _showBottomSheet();
+                        //  Provider.of<BottomSheetManager>(context, listen: false).showBottomSheet();
+                        Navigator.pop(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
+                        //  controller.pause();
+                      },
+                      child: Icon(
+                        Icons.keyboard_arrow_left,
+                        color: Color.fromARGB(255, 133, 133, 133),
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'PLAYING FROM',
-                        style: TextStyle(
-                          color: Color.fromARGB(225, 141, 141, 141),
-                          fontSize: 13,
-                        ),
-                      ),
-                      Text(
-                        'Rencently Played',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.format_indent_decrease),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: player,
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: [
-                  Row(
+                    Spacer(),
+                    const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-
-                    children: [
-                      TextScroll(
-                        widget.youtubeTitle,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                        textAlign: TextAlign.start,
-                        velocity: Velocity(pixelsPerSecond: Offset(50, 0)),
-                        delayBefore: Duration(seconds: 1),
-                        pauseBetween: Duration(seconds: 2),
-                        mode: TextScrollMode.endless,
-                      ),
-                    ],
-                  ),
-                ],
+                      children: [
+                        Text(
+                          'PLAYING FROM',
+                          style: TextStyle(
+                            color: Color.fromARGB(225, 141, 141, 141),
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          'Rencently Played',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Icon(
+                    Icons.format_indent_decrease
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      _replayVideo();
-                    },
-                    icon: Icon(Icons.replay, color: Colors.white),
-                  ),
-                  IconButton(
+              Expanded(
+                flex: 4,
+                child: player,
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextScroll(
+                          widget.youtubeTitle,
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                          textAlign: TextAlign.start,
+                          velocity: Velocity(pixelsPerSecond: Offset(50, 0)),
+                          delayBefore: Duration(seconds: 1),
+                          pauseBetween: Duration(seconds: 2),
+                          mode: TextScrollMode.endless,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
                       onPressed: () {
-                        _playPreviousVideo(youtubeService);
+                        _replayVideo();
+                      },
+                      icon: Icon(Icons.replay, color: Colors.white),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          _playPreviousVideo(youtubeService);
+                        },
+                        icon: Icon(
+                          Icons.skip_previous,
+                          color: Color.fromARGB(255, 233, 100, 41),
+                          size: 60,
+                        )),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    IconButton(
+                        icon: isVideoPlaying
+                            ? Icon(
+                                Icons.pause_circle_filled,
+                                size: 50,
+                                color: Color.fromARGB(255, 233, 100, 41),
+                              )
+                            : Icon(
+                                Icons.play_circle_fill,
+                                size: 50,
+                                color: Color.fromARGB(255, 233, 100, 41),
+                              ),
+                        //play and pause video
+                        onPressed: () {
+                          setState(() {
+                            if (isVideoPlaying) {
+                              controller.pause();
+                            } else {
+                              controller.play();
+                            }
+                            isVideoPlaying = !isVideoPlaying;
+                          });
+                        }),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _playNextVideo(youtubeService);
                       },
                       icon: Icon(
-                        Icons.skip_previous,
+                        Icons.skip_next,
                         color: Color.fromARGB(255, 233, 100, 41),
                         size: 60,
-                      )),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  IconButton(
-                      icon: isVideoPlaying
-                          ? Icon(
-                              Icons.pause_circle_filled,
-                              size: 50,
-                              color: Color.fromARGB(255, 233, 100, 41),
-                            )
-                          : Icon(
-                              Icons.play_circle_fill,
-                              size: 50,
-                              color: Color.fromARGB(255, 233, 100, 41),
-                            ),
-                      //play and pause video
-                      onPressed: () {
-                        setState(() {
-                          if (isVideoPlaying) {
-                            controller.pause();
-                          } else {
-                            controller.play();
-                          }
-                          isVideoPlaying = !isVideoPlaying;
-                        });
-                      }),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      _playNextVideo(youtubeService);
-                    },
-                    icon: Icon(
-                      Icons.skip_next,
-                      color: Color.fromARGB(255, 233, 100, 41),
-                      size: 60,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      thumbShape: const RoundSliderThumbShape(
-                        enabledThumbRadius: 0,
                       ),
                     ),
-                    child: Slider(
-                      activeColor: Color.fromARGB(255, 233, 100, 41),
-                      //controll volume video
-                      value: currentvol,
-                      min: 0,
-                      max: 100,
-                      divisions: 100,
-                      label: currentvol.round().toString(),
-                      onChanged: _setVolume,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 0,
+                        ),
+                      ),
+                      child: Slider(
+                        activeColor: Color.fromARGB(255, 233, 100, 41),
+                        //controll volume video
+                        value: currentvol,
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
+                        label: currentvol.round().toString(),
+                        onChanged: _setVolume,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (isMiniPlayer)
+            Align(
+               alignment: Alignment.bottomCenter,
+                child: MiniVideoPlayer(
+                    controller: controller,
+                    youtubeTitle: widget.youtubeTitle,
+                    onExpand: () {
+                      setState(() {
+                        isMiniPlayer = false; 
+                      });
+                    }))
+        ]),
       ),
     );
   }

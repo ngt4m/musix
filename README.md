@@ -1,11 +1,13 @@
-# flutter_application_2
+# Musi
 
 Music app 
 
 ## Getting Started
-Intergrates Youtube data API 
-MVVM
-This project is a starting point for a Musix
+Intergrates Youtube data API  
+
+MVVM  
+
+This project is a starting point for a Musix  
 
 
 A few resources to get you started if this is your first Flutter project:

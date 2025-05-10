@@ -54,11 +54,12 @@ class _SearchVideoState extends State<SearchVideo> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              setState(() {
-                if (!typing) {
-                  _searchVideos();
-                }
-              },
+              setState(
+                () {
+                  if (!typing) {
+                    _searchVideos();
+                  }
+                },
               );
             },
           ),
@@ -132,7 +133,7 @@ class TextBox extends StatefulWidget {
 }
 
 class _TextBoxState extends State<TextBox> {
-  final FocusNode focus = FocusNode();
+  final FocusNode _focus = FocusNode();
   List<String> suggestions = [];
   bool isfocus = false;
   void _clearTextField() {
@@ -152,7 +153,7 @@ class _TextBoxState extends State<TextBox> {
 
     final apiservice = Provider.of<YouTubeService>(context, listen: false);
     final fetchSuggestion = await apiservice.getSuggestions(query);
-    print(fetchSuggestion);//log dữ liệu trả về
+    print(fetchSuggestion); //log dữ liệu trả về
     setState(() {
       suggestions = fetchSuggestion;
     });
@@ -161,25 +162,27 @@ class _TextBoxState extends State<TextBox> {
   @override
   void initState() {
     super.initState();
-    focus.addListener(() {
+    _focus.addListener(() {
       setState(() {
-        isfocus = focus.hasFocus;
+        isfocus = _focus.hasFocus;
       });
     });
   }
-
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       TextField(
-        
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: 'Search',
           hintStyle: const TextStyle(
             color: Color.fromARGB(255, 129, 129, 129),
           ),
-          
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -192,7 +195,7 @@ class _TextBoxState extends State<TextBox> {
         ),
         controller: TextBox.ytsearch,
         //tap Enter
-        autofocus: true,
+         focusNode: _focus,
         onChanged: _fetchSuggestion,
         onSubmitted: (value) {
           final videoProvider =
@@ -205,10 +208,10 @@ class _TextBoxState extends State<TextBox> {
       ),
       if (isfocus && suggestions.isNotEmpty)
         Container(
-          height : 200,
+          height: 200,
           color: Colors.black,
           child: ListView.builder(
-               shrinkWrap: true,
+            shrinkWrap: true,
             itemCount: suggestions.length,
             itemBuilder: (context, index) {
               return ListTile(

@@ -14,7 +14,7 @@ class SearchModel {
 
   factory SearchModel.fromMap(Map<String, dynamic> map) {
     return SearchModel(
-      id: map['id']['videoId'],
+      id:  map['id']?['videoId'] as String? ?? 'Unknown ID',
       title: map['snippet']['title'],
       thumbnailUrl: map['snippet']['thumbnails']['default']['url'],
       channelTitle: map['snippet']['channelTitle'],
