@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:musi/key_api/keys.dart';
+import 'package:musi/key_api/api_key.dart';
 import 'package:musi/models/search_model.dart';
 import 'package:musi/models/playlist_model.dart';
 import 'package:http/http.dart' as http;

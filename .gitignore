@@ -43,7 +43,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-lib/key_api/keys.dart
+lib/key_api/api_key.dart
+ios
+web
+linux
 =======
 # See https://www.dartlang.org/guides/libraries/private-files
 
@@ -73,3 +76,4 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 >>>>>>> 8eb551ca8443a385be46a7c02aba0bb9e52050ee
+

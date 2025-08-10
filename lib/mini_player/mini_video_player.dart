@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class MiniVideoPlayer extends StatelessWidget {
+class MiniVideoPlayer extends StatefulWidget {
   final YoutubePlayerController controller;
   final String youtubeTitle;
   final VoidCallback onExpand;
@@ -13,6 +13,17 @@ class MiniVideoPlayer extends StatelessWidget {
       });
 
   @override
+  State<MiniVideoPlayer> createState() => _MiniVideoPlayerState();
+}
+
+class _MiniVideoPlayerState extends State<MiniVideoPlayer> with SingleTickerProviderStateMixin {
+   late YoutubePlayerController _controller;
+  bool _isExpanded = false;
+  late AnimationController _animationController;
+  late Animation<double> _heightAnimation;
+  late Animation<double> _widthAnimation;
+  
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 80,
@@ -20,10 +31,10 @@ class MiniVideoPlayer extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: onExpand,
+            onTap: widget.onExpand,
             child: AspectRatio(
               aspectRatio: 16 / 9,
-              child: YoutubePlayer(controller: controller),
+              child: YoutubePlayer(controller: widget.controller),
             ),
           ),
           SizedBox(
@@ -35,7 +46,7 @@ class MiniVideoPlayer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  youtubeTitle,
+                  widget.youtubeTitle,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -56,7 +67,7 @@ class MiniVideoPlayer extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              controller.pause();
+              widget.controller.pause();
             },
             icon: const Icon(
               Icons.close,
